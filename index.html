@@ -13,18 +13,20 @@
             margin: 0;
             overflow: hidden;
             position: relative;
+            touch-action: none;
         }
 
         #canvas {
             border: 1px solid #000;
             position: absolute;
+            touch-action: none;
         }
 
         #odiaText {
-            font-size: 400px;
+            font-size: 200px;
             position: absolute;
             opacity: 0.5;
-            top: 60%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
@@ -34,7 +36,8 @@
             bottom: 10px;
             display: flex;
             justify-content: space-between;
-            width: 30%;
+            width: 80%;
+            max-width: 400px;
         }
 
         button {
@@ -63,10 +66,10 @@
         const context = canvas.getContext('2d');
         let isDrawing = false;
         let currentAlphabetIndex = 0;
-        const odiaAlphabets = ['ଅ', 'ଆ', 'ଇ', 'ଈ', 'ଉ', 'ଊ', 'ଋ', 'ଏ', 'ଐ', 'ଓ', 'ଔ','କ',];
+        const odiaAlphabets = ['ଅ', 'ଆ', 'ଇ', 'ଈ', 'ଉ', 'ଊ', 'ଋ', 'ଏ', 'ଐ', 'ଓ', 'ଔ', 'କ'];
         const audioFiles = ['1.mp3', '2.mp3', '3.mp3', '4.mp3', '5.mp3', '6.mp3', '7.mp3', '8.mp3', '9.mp3', '10.mp3', '11.mp3', '12.mp3'];
 
-        context.lineWidth = 26;
+        context.lineWidth = 10;
 
         function startDrawing(e) {
             isDrawing = true;
@@ -83,10 +86,10 @@
 
             context.lineCap = 'round';
             context.lineJoin = 'round';
-            context.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            context.lineTo(e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop);
             context.stroke();
             context.beginPath();
-            context.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            context.moveTo(e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop);
         }
 
         function clearCanvas() {
@@ -115,9 +118,9 @@
             audio.play();
         }
 
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchend', stopDrawing);
+        canvas.addEventListener('touchmove', draw);
 
         updateAlphabet();
     </script>
