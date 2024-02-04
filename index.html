@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw on Canvas with Odia Text</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #canvas {
+            border: 1px solid #000;
+            position: absolute;
+        }
+
+        #odiaText {
+            font-size: 400px;
+            position: absolute;
+            opacity: 0.5;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #buttons {
+            position: absolute;
+            bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: 30%;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="odiaText">ଅ</div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+
+    <div id="buttons">
+        <button onclick="showPrevious()">Previous</button>
+        <button onclick="playAudio()">Play</button>
+        <button onclick="showNext()">Next</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        let isDrawing = false;
+        let currentAlphabetIndex = 0;
+        const odiaAlphabets = ['ଅ', 'ଆ', 'ଇ', 'ଈ', 'ଉ', 'ଊ', 'ଋ', 'ଏ', 'ଐ', 'ଓ', 'ଔ','କ',];
+        const audioFiles = ['1.mp3', '2.mp3', '3.mp3', '4.mp3', '5.mp3', '6.mp3', '7.mp3', '8.mp3', '9.mp3', '10.mp3', '11.mp3', '12.mp3'];
+
+        context.lineWidth = 26;
+
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            context.beginPath();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            context.lineCap = 'round';
+            context.lineJoin = 'round';
+            context.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            context.stroke();
+            context.beginPath();
+            context.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        function clearCanvas() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function showPrevious() {
+            clearCanvas();
+            currentAlphabetIndex = (currentAlphabetIndex - 1 + odiaAlphabets.length) % odiaAlphabets.length;
+            updateAlphabet();
+        }
+
+        function showNext() {
+            clearCanvas();
+            currentAlphabetIndex = (currentAlphabetIndex + 1) % odiaAlphabets.length;
+            updateAlphabet();
+        }
+
+        function updateAlphabet() {
+            const odiaText = document.getElementById('odiaText');
+            odiaText.textContent = odiaAlphabets[currentAlphabetIndex];
+        }
+
+        function playAudio() {
+            const audio = new Audio(audioFiles[currentAlphabetIndex]);
+            audio.play();
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+
+        updateAlphabet();
+    </script>
+</body>
+</html>
